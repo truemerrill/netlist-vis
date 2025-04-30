@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "netlist-vis-backend"
+version = "0.1.0"
+description = "FastAPI backend for the netlist visualizer application"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["fastapi", "python-dotenv", "motor", "uvicorn"]
+
+[project.optional-dependencies]
+dev = [
+  "fastapi-cli",
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings",
+  "mkdocstrings-python",
+  "pytest",
+  "requests"
+]
+
