@@ -1,22 +1,21 @@
-from typing import Annotated, Optional
-
-from pydantic import BaseModel, BeforeValidator, EmailStr, Field
-
-PyObjectId = Annotated[str, BeforeValidator(str)]
+from typing import Annotated
+from beanie import Document, Indexed
+from pydantic import EmailStr
 
 
-class User(BaseModel):
-    id: Optional[PyObjectId] = Field(alias="_id", default=None)
-    email: EmailStr
-    active: bool = True
+class User(Document):
+    """User model
+
+    Attributes:
+        email (EmailStr): the user email
+    """
+    email: Annotated[EmailStr, Indexed(unique=True)]
 
 
-class Component(BaseModel):
-    name: str
-    left_pins: tuple[str, ...] = Field(default_factory=tuple)
-    right_pins: tuple[str, ...] = Field(default_factory=tuple)
+# Models ----------------------------------------------------------------------
+#
+# Note: Add Beanie models here so they can be initialized later by 
+#   `.database.init_db()`.
+# 
 
-
-class PinReference(BaseModel):
-    component_name: str
-    pin_name: str
+MODELS = [User]

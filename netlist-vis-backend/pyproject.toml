@@ -8,8 +8,8 @@ version = "0.1.0"
 description = "FastAPI backend for the netlist visualizer application"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["fastapi", "pydantic[email]", "python-dotenv", "motor", "uvicorn"]
-
+dependencies = ["fastapi", "beanie", "pydantic[email]", "uvicorn[standard]"]
+# "pydantic[email]", "motor", "beanie",
 [project.optional-dependencies]
 dev = [
   "fastapi-cli",

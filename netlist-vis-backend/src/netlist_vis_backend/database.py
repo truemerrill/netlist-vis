@@ -1,24 +1,32 @@
 import os
-from functools import lru_cache
 
-from dotenv import load_dotenv
+from beanie import Document, init_beanie
+from typing import Sequence
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
-
-# Load .env file
-load_dotenv()
+from .models import MODELS
 
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017")
 MONGO_DB_NAME = os.environ.get("MONGO_DB_NAME", "netlist_vis")
 
 
-# Lazy-initialized shared client
-@lru_cache()
-def get_client() -> AsyncIOMotorClient:
-    return AsyncIOMotorClient(MONGO_URI)
+async def init_db(
+    uri: str = MONGO_URI,
+    db_name: str = MONGO_DB_NAME,
+    models: Sequence[type[Document]] = MODELS,
+) -> AsyncIOMotorDatabase:
+    """Initialize the database
 
+    Args:
+        uri (str, optional): the mongo URI. Defaults to MONGO_URI.
+        db_name (str, optional): the mongo collection. Defaults to
+            MONGO_DB_NAME.
+        models (Sequence[type[Document]], optional): the beanie documents to
+            initialize. Defaults to MODELS.
 
-def get_db() -> AsyncIOMotorDatabase:
-    return get_client()[MONGO_DB_NAME]
-
-
-db = get_db()
+    Returns:
+        AsyncIOMotorDatabase: the async database
+    """
+    client = AsyncIOMotorClient(uri)  # type: ignore
+    db = client[db_name]
+    await init_beanie(db, document_models=models)
+    return db

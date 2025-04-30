@@ -1,21 +1,40 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import EmailStr
-
-from ..database import db
-from ..models import PyObjectId, User
+from pymongo.errors import DuplicateKeyError
+from ..models import User
 
 router = APIRouter()
 
 
-@router.post("/users/", response_model=User)
+# Note: See https://www.mongodb.com/developer/languages/python/python-quickstart-fastapi/
+
+@router.post(
+    "/users/",
+    response_description="Add a new user",
+    response_model=User,
+)
 async def create_user(email: EmailStr) -> User:
-    existing = await db.users.find_one({"email": email})
-    if existing:
-        raise HTTPException(status_code=400, detail="User already exists.")
+    user = User(email=email)
+    try:
+        await user.insert()
+        return user
+    except DuplicateKeyError:
+        raise HTTPException(
+            status_code=400,
+            detail="User already exists."
+        )
 
-    user = User(email=email, active=True)
-    result = await db.users.insert_one(user.model_dump(by_alias=True))
 
-    # Insert the id from mongo
-    user.id = str(result.inserted_id)
+@router.get(
+    "/users/{email}",
+    response_description="Get a user by email",
+    response_model=User,
+)
+async def get_user(email: EmailStr) -> User:
+    user = await User.find_one(User.email == email)
+    if user is None:
+        raise HTTPException(
+            status_code=400,
+            detail="User not found."
+        )
     return user
