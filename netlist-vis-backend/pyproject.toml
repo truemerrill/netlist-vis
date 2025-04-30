@@ -8,16 +8,21 @@ version = "0.1.0"
 description = "FastAPI backend for the netlist visualizer application"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["fastapi", "python-dotenv", "motor", "uvicorn"]
+dependencies = ["fastapi", "pydantic[email]", "python-dotenv", "motor", "uvicorn"]
 
 [project.optional-dependencies]
 dev = [
   "fastapi-cli",
+  "httpx",
   "mkdocs",
   "mkdocs-material",
   "mkdocstrings",
   "mkdocstrings-python",
   "pytest",
-  "requests"
+  "pytest-asyncio",
+  "requests",
 ]
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_fixture_scope = "function"

@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 
+from .routes import users
+
 app = FastAPI()
-
-
-@app.get("/")
-async def health():
-    return {"message": "Netlist backend running."}
+app.include_router(users.router)
