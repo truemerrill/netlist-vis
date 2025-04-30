@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./netlist-vis-backend
+    build: ./backend
     ports:
       - "8000:8000"
     environment:
