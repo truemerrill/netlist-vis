@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from pydantic import EmailStr
 from pymongo.errors import DuplicateKeyError
 from ..models import User
@@ -12,6 +12,7 @@ router = APIRouter()
     "/users/",
     response_description="Add a new user",
     response_model=User,
+    status_code=status.HTTP_201_CREATED
 )
 async def create_user(email: EmailStr) -> User:
     user = User(email=email)
@@ -20,7 +21,7 @@ async def create_user(email: EmailStr) -> User:
         return user
     except DuplicateKeyError:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="User already exists."
         )
 
@@ -34,7 +35,7 @@ async def get_user(email: EmailStr) -> User:
     user = await User.find_one(User.email == email)
     if user is None:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found."
         )
     return user

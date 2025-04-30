@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from .database import init_db
-from .routes import users
+from .routes import netlists, users
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,5 +14,5 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
-
+app.include_router(netlists.router)
 app.include_router(users.router)
