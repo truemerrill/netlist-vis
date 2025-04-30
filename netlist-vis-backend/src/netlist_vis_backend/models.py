@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated, Self
 from beanie import Document, Indexed, PydanticObjectId
 from pydantic import BaseModel, EmailStr, model_validator
@@ -121,10 +122,25 @@ class Netlist(Document):
         return self
 
 
+class NetlistRuleViolation(Document):
+    """A violation of a netlist rule
+    
+    Attributes:
+        netlist_id (PydanticObjectId): the id of the netlist that was checked
+        rule (str): the name of the rule that was violated
+        timestamp (datetime): the time the rule was checked
+        detail (str): a message describing the rule violation
+    """
+    netlist_id: PydanticObjectId
+    rule: str
+    timestamp: datetime
+    detail: str
+
+
 # Models ----------------------------------------------------------------------
 #
 # Note: Add Beanie models here so they can be initialized later by
 #   `.database.init_db()`.
 #
 
-MODELS = [User, Netlist]
+MODELS = [User, Netlist, NetlistRuleViolation]

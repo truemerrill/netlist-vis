@@ -6,8 +6,6 @@ from ..models import User
 router = APIRouter()
 
 
-# Note: See https://www.mongodb.com/developer/languages/python/python-quickstart-fastapi/
-
 @router.post(
     "/users/",
     response_description="Add a new user",
