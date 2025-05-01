@@ -1,8 +1,18 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as joint from "@joint/core";
 import { IC } from "./circuit/ic";
 
+
+/** Type for displaying a tooltip on the editor page */
+export interface EditorTooltip {
+  text: string;
+  x: number;
+  y: number;
+}
+
+
 export default function Editor() {
+  const [tooltip, setTooltip] = useState<EditorTooltip | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,8 +33,8 @@ export default function Editor() {
     });
 
     // Add a sample rectangle (just to confirm it renders)
-    const ic = IC.createWithPins("U2", {
-      left: ["p1", "p3", "p5"],
+    const ic = IC.create("U2", {
+      left: ["p1", "p3", "p5", "p7"],
       right: ["p2", "p4"],
     });
 
