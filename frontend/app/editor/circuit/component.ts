@@ -15,6 +15,9 @@ export type Attributes = dia.Element.Attributes;
 //** Whether the pin is on the left or right side */
 export type Side = "left" | "right";
 
+const MIN_HEIGHT = 60;
+const MIN_PIN_SPACING = 20;
+
 
 //** Utility function to draw pins (Ports in JointJS parlance) */
 function createPort(id: string, side: Side): dia.Element.Port {
@@ -108,7 +111,11 @@ export abstract class CircuitComponent extends dia.Element<Attributes> {
     name: string,
     pins: { left: string[]; right: string[] }
   ) {
+    const maxCount = Math.max(pins.left.length, pins.right.length);
+    const height = Math.max(MIN_HEIGHT, (maxCount + 1) * MIN_PIN_SPACING);
+
     const obj = new this();
+    obj.resize(60, height);
     obj.attr("label/text", name);
     obj.addPorts([
       ...pins.left.map(id => createPort(id, "left")),

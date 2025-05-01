@@ -13,10 +13,6 @@ export class IC extends CircuitComponent {
     return {
       ...super.defaults(),
       type: "circuit.IC",
-      size: {
-        width: 75,
-        height: 150,
-      },
       markup: [
         {
           tagName: "rect",
