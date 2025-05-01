@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as joint from "@joint/core";
 import { IC } from "./circuit/ic";
+import './editor.css';
 
 
 /** Type for displaying a tooltip on the editor page */

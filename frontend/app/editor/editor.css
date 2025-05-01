@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+    --color-wire: #131e29;
+    --color-label: #496dd8;
+    --color-vcc: #e11d48;
+    --color-gnd: #43aa8b;
+    --color-fill: #dde6ed;
+}
+
+.circuit-component-body {
+    @apply text-base font-sans text-center;
+    stroke: var(--color-wire);
+    stroke-width: 2px;
+    fill: var(--color-fill);
+}
+
+.circuit-component-label {
+    @apply text-sm font-sans text-center;
+}
+
+.circuit-component-pin-label {
+    @apply text-xs font-sans text-center;
+    fill: var(--color-gray-600);
+}
