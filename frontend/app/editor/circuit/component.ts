@@ -20,7 +20,10 @@ const MIN_PIN_SPACING = 20;
 
 
 //** Utility function to draw pins (Ports in JointJS parlance) */
-function createPort(id: string, side: Side): dia.Element.Port {
+function createPort(id: string, side: Side, cssClass: string): dia.Element.Port {
+  const bodyCls = `${cssClass}-pin-body`;
+  const labelCls = `${cssClass}-pin-label`;  
+
   return {
     id: id,
     group: side,
@@ -31,14 +34,12 @@ function createPort(id: string, side: Side): dia.Element.Port {
       portBody: {
         magnet: "passive",
         r: 5,
-        stroke: PIN_STROKE_COLOR,
+        class: bodyCls,
         strokeWidth: 1,
-        fill: PIN_BG_COLOR,
       },
       portLabel: {
         text: id,
-        fill: PIN_LABEL_COLOR,
-        fontSize: PIN_FONT_SIZE,
+        class: labelCls,
         x: side === "left" ? -6 : 6,
         y: side === "left" ? -4 : 4,
         textVerticalAnchor: side === "left" ? "bottom" : "top",
@@ -62,8 +63,8 @@ export abstract class CircuitComponent extends dia.Element<Attributes> {
       body: {
         refWidth: "100%",
         refHeight: "100%",
-        fill: BG_COLOR,
-        stroke: STROKE_COLOR,
+        // fill: BG_COLOR,
+        // stroke: STROKE_COLOR,
         strokeWidth: 1,
       },
       label: {
@@ -71,8 +72,8 @@ export abstract class CircuitComponent extends dia.Element<Attributes> {
         refY: "50%",
         textAnchor: "middle",
         yAlignment: "middle",
-        fontSize: FONT_SIZE,
-        fill: LABEL_COLOR,
+        // fontSize: FONT_SIZE,
+        // fill: LABEL_COLOR,
       },
       ports: {
         groups: {
@@ -104,22 +105,32 @@ export abstract class CircuitComponent extends dia.Element<Attributes> {
    * @param this The constructor function of the subclass. Inferred automatically.
    * @param name The label text to display in the center of the component.
    * @param pins An object containing arrays of pin IDs to place on the `left` and `right` sides.
+   * @param cssClass The css class name prefix.
    * @returns A new instance of the subclass, configured with the specified label and pins.
    */
   static create<T extends CircuitComponent>(
     this: new (...args: any[]) => T,
     name: string,
-    pins: { left: string[]; right: string[] }
-  ) {
+    pins: { left: string[]; right: string[] },
+    cssClass?: string
+  ) {    
+    // CSS classes to allow per-component styling
+    const cls = cssClass ?? "circuit-component";
+    const bodyCls = `${cls}-body`;
+    const labelCls = `${cls}-label`;
+    
+    // Resize the component height to fit the pins
     const maxCount = Math.max(pins.left.length, pins.right.length);
     const height = Math.max(MIN_HEIGHT, (maxCount + 1) * MIN_PIN_SPACING);
 
     const obj = new this();
     obj.resize(60, height);
     obj.attr("label/text", name);
+    obj.attr("label/class", labelCls);
+    obj.attr("body/class", bodyCls);
     obj.addPorts([
-      ...pins.left.map(id => createPort(id, "left")),
-      ...pins.right.map(id => createPort(id, "right")),
+      ...pins.left.map(id => createPort(id, "left", cls)),
+      ...pins.right.map(id => createPort(id, "right", cls)),
     ]);
     return obj;
   }
