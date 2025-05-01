@@ -1,5 +1,4 @@
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,5 +8,15 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <Welcome />;
+  // const name: string = "C1";
+  // const pins: PinAssignments = {
+  //   left_pins: ["p1", "p3", "p5"],
+  //   right_pins: ["p2", "p4"]
+  // }
+
+  return (
+    <>
+      <p>Hello World</p>
+    </>
+  );
 }
