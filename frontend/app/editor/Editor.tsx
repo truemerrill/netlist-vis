@@ -1,63 +1,136 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as joint from "@joint/core";
 
 import "./editor.css";
 import type { Netlist } from "./types.d.ts";
 import createCircuitComponent from "./circuit";
+import { Wire } from "./circuit/wire";
 
 // Test data - replace with API call
 import data from "./netlist.json";
 const netlist: Netlist = data;
 
+type Graph = joint.dia.Graph;
 
 /**
- * Render a Netlist into a JointJS graph.
+ * Render an entire netlist (components + wires) into a JointJS graph.
  *
- * @param graph - The JointJS graph to populate
- * @param netlist - The structured netlist object
+ * @param graph - The graph to populate
+ * @param netlist - The structured netlist to render
  */
-function renderNetlistToGraph(graph: joint.dia.Graph, netlist: Netlist): void {
-  // Map of component ID → dia.Element
+function renderNetlist(graph: Graph, netlist: Netlist): void {
+  const componentMap = renderCircuitComponents(graph, netlist);
+  renderWires(graph, netlist, componentMap);
+}
+
+/**
+ * Render all circuit components in the netlist into the graph.
+ *
+ * @param graph - The graph to populate
+ * @param netlist - The structured netlist
+ * @returns A map from component name to rendered JointJS element
+ */
+function renderCircuitComponents(
+  graph: Graph,
+  netlist: Netlist,
+): Record<string, joint.dia.Element> {
   const componentMap: Record<string, joint.dia.Element> = {};
 
-  // 1. Add all components to the graph
   Object.entries(netlist.components).forEach(([name, def], index) => {
     const element = createCircuitComponent(name, def);
 
-    // Position them with spacing
     element.position(
       100 + (index % 4) * 150,
-      100 + Math.floor(index / 4) * 200
+      100 + Math.floor(index / 4) * 200,
     );
 
     graph.addCell(element);
     componentMap[name] = element;
   });
 
-  // 2. Add links for each net
-  Object.entries(netlist.connections).forEach(([netName, connections]) => {
+  return componentMap;
+}
+
+/**
+ * Render all wires (links) between component pins into the graph.
+ *
+ * @param graph - The graph to populate
+ * @param netlist - The structured netlist
+ * @param componentMap - The element lookup for component names
+ */
+function renderWires(
+  graph: Graph,
+  netlist: Netlist,
+  componentMap: Record<string, joint.dia.Element>,
+): void {
+  Object.entries(netlist.connections).forEach(([name, connections]) => {
     for (let i = 0; i < connections.length - 1; i++) {
       const from = connections[i];
       const to = connections[i + 1];
-
       const fromElement = componentMap[from.component];
       const toElement = componentMap[to.component];
 
-      const link = new joint.shapes.standard.Link();
-      link.source({ id: fromElement.id, port: from.pin });
-      link.target({ id: toElement.id, port: to.pin });
-      link.attr({
-        line: {
-          stroke: "#888",
-          strokeWidth: 2,
-          targetMarker: undefined,
-        },
-      });
+      const wire = Wire.create(
+        name,
+        { id: fromElement.id, port: from.pin },
+        { id: toElement.id, port: to.pin },
+      );
 
-      graph.addCell(link);
+      graph.addCell(wire);
     }
   });
 }
+
+// function renderWires(
+//   graph: Graph,
+//   netlist: Netlist,
+//   componentMap: Record<string, joint.dia.Element>
+// ): void {
+//   Object.entries(netlist.connections).forEach(([name, connections]) => {
+//     for (let i = 0; i < connections.length - 1; i++) {
+//       const from = connections[i];
+//       const to = connections[i + 1];
+//       const fromElement = componentMap[from.component];
+//       const toElement = componentMap[to.component];
+
+//       const classMap: Record<string, string> = {
+//         gnd: "circuit-wire circuit-wire-gnd",
+//         vcc: "circuit-wire circuit-wire-vcc",
+//         clk: "circuit-wire circuit-wire-clk",
+//         default: "circuit-wire"
+//       };
+//       const cssClass = classMap[name.toLowerCase()] ?? classMap.default;
+//       const link = Wire.create(name, cssClass);
+//       link.source({ id: fromElement.id, port: from.pin });
+//       link.target({ id: toElement.id, port: to.pin });
+//       link.connector("jumpover", { size: 5 });
+//       link.router("metro", {
+//         alwaysMove: true,
+//         step: 10,
+//         padding: 10,
+//       });
+//       link.label(0, {
+//         attrs: {
+//           text: {
+//             text: name,
+//             fontSize: 12,
+//             fill: "#000",
+//             class: "wire-label",
+//           },
+//           rect: {
+//             fill: "transparent", // ✅ remove white box
+//             stroke: "none"
+//           }
+//         },
+//         position: {
+//           distance: 0.5,
+//           offset: 0
+//         }
+//       });
+//       graph.addCell(link);
+//     }
+//   });
+// }
 
 export default function Editor() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -74,12 +147,13 @@ export default function Editor() {
       height: 600,
       gridSize: 10,
       drawGrid: true,
+      interactive: true,
       background: {
         color: "#f0f0f0",
       },
     });
 
-    renderNetlistToGraph(graph, netlist);
+    renderNetlist(graph, netlist);
 
     return () => {
       paper.remove();

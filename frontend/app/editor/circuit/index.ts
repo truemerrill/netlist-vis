@@ -2,7 +2,6 @@ import type { NetlistComponent } from "../types";
 import { CircuitComponent } from "./component";
 import { IC } from "./ic";
 
-
 /**
  * Factory function that creates a CircuitComponent based on its kind.
  *
@@ -12,7 +11,7 @@ import { IC } from "./ic";
  */
 export default function createCircuitComponent(
   name: string,
-  def: NetlistComponent
+  def: NetlistComponent,
 ): CircuitComponent {
   switch (def.kind) {
     case "ic":

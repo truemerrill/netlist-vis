@@ -1,7 +1,6 @@
 import { CircuitComponent } from "./component";
 import type { Attributes } from "./component";
 
-
 export class IC extends CircuitComponent {
   defaults(): Partial<Attributes> {
     return {

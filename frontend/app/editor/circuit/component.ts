@@ -1,6 +1,5 @@
 import { dia, util } from "@joint/core";
 
-
 export type Attributes = dia.Element.Attributes;
 
 //** Whether the pin is on the left or right side */
@@ -9,12 +8,8 @@ export type Side = "left" | "right";
 const MIN_HEIGHT = 60;
 const MIN_PIN_SPACING = 20;
 
-
 //** Utility function to draw pins (Ports in JointJS parlance) */
-function createPort(id: string, side: Side, cssClass: string): dia.Element.Port {
-  const bodyCls = `${cssClass}-pin-body`;
-  const labelCls = `${cssClass}-pin-label`;  
-
+function createPort(id: string, side: Side): dia.Element.Port {
   return {
     id: id,
     group: side,
@@ -25,12 +20,12 @@ function createPort(id: string, side: Side, cssClass: string): dia.Element.Port 
       portBody: {
         magnet: "passive",
         r: 5,
-        class: bodyCls,
+        class: "pin-body",
         strokeWidth: 1,
       },
       portLabel: {
         text: id,
-        class: labelCls,
+        class: "pin-label",
         x: side === "left" ? -6 : 6,
         y: side === "left" ? -4 : 4,
         textVerticalAnchor: side === "left" ? "bottom" : "top",
@@ -47,7 +42,6 @@ function createPort(id: string, side: Side, cssClass: string): dia.Element.Port 
   };
 }
 
-
 export abstract class CircuitComponent extends dia.Element<Attributes> {
   defaults(): Partial<Attributes> {
     return {
@@ -55,8 +49,6 @@ export abstract class CircuitComponent extends dia.Element<Attributes> {
       body: {
         refWidth: "100%",
         refHeight: "100%",
-        // fill: BG_COLOR,
-        // stroke: STROKE_COLOR,
         strokeWidth: 1,
       },
       label: {
@@ -64,8 +56,6 @@ export abstract class CircuitComponent extends dia.Element<Attributes> {
         refY: "50%",
         textAnchor: "middle",
         yAlignment: "middle",
-        // fontSize: FONT_SIZE,
-        // fill: LABEL_COLOR,
       },
       ports: {
         groups: {
@@ -104,25 +94,26 @@ export abstract class CircuitComponent extends dia.Element<Attributes> {
     this: new (...args: any[]) => T,
     name: string,
     pins: { left: string[]; right: string[] },
-    cssClass?: string
-  ) {    
+    cssClass?: string,
+  ) {
     // CSS classes to allow per-component styling
-    const cls = cssClass ?? "circuit-component";
-    const bodyCls = `${cls}-body`;
-    const labelCls = `${cls}-label`;
-    
+    const cls = cssClass
+      ? ["circuit-component", cssClass].join(" ")
+      : "circuit-component";
+
     // Resize the component height to fit the pins
     const maxCount = Math.max(pins.left.length, pins.right.length);
     const height = Math.max(MIN_HEIGHT, (maxCount + 1) * MIN_PIN_SPACING);
 
     const obj = new this();
     obj.resize(60, height);
+    obj.attr("root/class", cls);
     obj.attr("label/text", name);
-    obj.attr("label/class", labelCls);
-    obj.attr("body/class", bodyCls);
+    obj.attr("label/class", "circuit-component-label");
+    obj.attr("body/class", "circuit-component-body");
     obj.addPorts([
-      ...pins.left.map(id => createPort(id, "left", cls)),
-      ...pins.right.map(id => createPort(id, "right", cls)),
+      ...pins.left.map((id) => createPort(id, "left")),
+      ...pins.right.map((id) => createPort(id, "right")),
     ]);
     return obj;
   }

@@ -1,25 +1,77 @@
 @import "tailwindcss";
 
 @theme {
-    --color-wire: #131e29;
-    --color-label: #496dd8;
-    --color-vcc: #e11d48;
-    --color-gnd: #43aa8b;
-    --color-fill: #dde6ed;
+  --color-wire: #131e29;
+  --color-label: #496dd8;
+  --color-vcc: #e11d48;
+  --color-gnd: #43aa8b;
+  --color-clk: #8c4bdb;
+  --color-fill: #dde6ed;
 }
 
 .circuit-component-body {
-    @apply text-base font-sans text-center;
-    stroke: var(--color-wire);
-    stroke-width: 2px;
-    fill: var(--color-fill);
+  @apply text-base font-sans text-center;
+  stroke: var(--color-wire);
+  stroke-width: 2px;
+  fill: var(--color-fill);
 }
 
 .circuit-component-label {
-    @apply text-sm font-sans text-center;
+  @apply text-sm font-sans text-center;
 }
 
-.circuit-component-pin-label {
-    @apply text-xs font-sans text-center;
-    fill: var(--color-gray-600);
+.circuit-component .pin-label {
+  @apply text-xs font-sans text-center;
+  fill: var(--color-gray-600);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  pointer-events: none;
 }
+
+.circuit-component:hover .pin-label {
+  opacity: 1;
+}
+
+.circuit-wire path {
+  stroke: var(--color-wire);
+  stroke-width: 2;
+  fill: none;
+}
+
+.circuit-wire-gnd path {
+  stroke: var(--color-gnd);
+}
+
+.circuit-wire-vcc path {
+  stroke: var(--color-vcc);
+}
+
+.circuit-wire-clk path {
+  stroke: var(--color-clk);
+}
+
+/* Hide the label group by default */
+.circuit-wire .label {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Show the label when hovering over any part of the wire */
+.circuit-wire:hover .label {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* .wire-label,
+.wire-label-bg {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.circuit-wire:hover .wire-label,
+.circuit-wire:hover .wire-label-bg {
+  visibility: visible;
+  opacity: 1;
+} */

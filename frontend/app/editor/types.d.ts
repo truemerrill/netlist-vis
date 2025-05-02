@@ -1,4 +1,3 @@
-
 /**
  * Represents a full netlist, including component definitions and signal connections.
  */
@@ -22,7 +21,7 @@ export interface Netlist {
 /**
  * The kind or type of component (e.g., "ic", "resistor", "capacitor").
  * Currently only "ic" is supported.
- */ 
+ */
 export type ComponentType = "ic";
 
 /**
