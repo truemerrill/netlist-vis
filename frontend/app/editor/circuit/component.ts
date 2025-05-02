@@ -1,14 +1,5 @@
 import { dia, util } from "@joint/core";
-import {
-  BG_COLOR,
-  PIN_BG_COLOR,
-  PIN_STROKE_COLOR,
-  PIN_LABEL_COLOR,
-  FONT_SIZE,
-  PIN_FONT_SIZE,
-  STROKE_COLOR,
-  LABEL_COLOR,
-} from "../theme";
+
 
 export type Attributes = dia.Element.Attributes;
 

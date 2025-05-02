@@ -1,19 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import * as joint from "@joint/core";
-import { IC } from "./circuit/ic";
+
 import './editor.css';
+import type { Netlist } from "./types.d.ts"
+import createCircuitComponent from "./circuit";
 
 
-/** Type for displaying a tooltip on the editor page */
-export interface EditorTooltip {
-  text: string;
-  x: number;
-  y: number;
-}
+// Test data - replace with API call
+import data from "./netlist.json";
+const netlist: Netlist = data;
 
 
 export default function Editor() {
-  const [tooltip, setTooltip] = useState<EditorTooltip | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,14 +31,14 @@ export default function Editor() {
       },
     });
 
-    // Add a sample rectangle (just to confirm it renders)
-    const ic = IC.create("U2", {
-      left: ["p1", "p3", "p5", "p7"],
-      right: ["p2", "p4"],
-    });
+    // // Add a sample rectangle (just to confirm it renders)
+    // const ic = IC.create("U2", {
+    //   left: ["p1", "p3", "p5", "p7"],
+    //   right: ["p2", "p4"],
+    // });
 
-    ic.position(100, 100);
-    graph.addCell(ic);
+    // ic.position(100, 100);
+    // graph.addCell(ic);
 
     return () => {
       paper.remove();

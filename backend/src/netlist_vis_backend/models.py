@@ -26,10 +26,12 @@ class Component(BaseModel):
         of the component.
 
     Attributes:
+        kind (str): the component type.
         left_pins (tuple[str, ...]): the left pins.
         right_pins (tuple[str, ...]): the right pins.
     """
 
+    kind: str
     left_pins: tuple[str, ...]
     right_pins: tuple[str, ...]
 

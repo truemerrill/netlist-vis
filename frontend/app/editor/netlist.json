@@ -1,0 +1,46 @@
+{
+  "user_id": "6812301f2a2843662e401f8b",
+  "components": {
+    "C1": {
+      "kind": "ic",
+      "left_pins": ["p1", "p3", "p5"],
+      "right_pins": ["p2", "p4"]
+    },
+    "C2": {
+      "kind": "ic",
+      "left_pins": ["p1", "p3", "p5", "p7"],
+      "right_pins": ["p2", "p4", "p6", "p8"]
+    },
+    "C3": {
+      "kind": "ic",
+      "left_pins": ["p1"],
+      "right_pins": ["p2"]
+    }
+  },
+  "connections": {
+    "GND": [
+      {
+        "component": "C1",
+        "pin": "p1"
+      },
+      {
+        "component": "C2",
+        "pin": "p1"
+      },
+      {
+        "component": "C2",
+        "pin": "p7"
+      }
+    ],
+    "VCC": [
+      {
+        "component": "C1",
+        "pin": "p2"
+      },
+      {
+        "component": "C2",
+        "pin": "p3"
+      }
+    ]
+  }
+}

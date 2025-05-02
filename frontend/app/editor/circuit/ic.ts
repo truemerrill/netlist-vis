@@ -1,12 +1,6 @@
 import { CircuitComponent } from "./component";
 import type { Attributes } from "./component";
 
-import {
-  FONT_SIZE,
-  IC_BG_COLOR,
-  IC_STROKE_COLOR,
-  IC_LABEL_COLOR
-} from "../theme";
 
 export class IC extends CircuitComponent {
   defaults(): Partial<Attributes> {
