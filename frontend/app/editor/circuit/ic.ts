@@ -21,9 +21,6 @@ export class IC extends CircuitComponent {
         body: {
           refWidth: "100%",
           refHeight: "100%",
-          // fill: IC_BG_COLOR,
-          // stroke: IC_STROKE_COLOR,
-          strokeWidth: 1,
         },
         label: {
           text: "IC",
@@ -31,8 +28,6 @@ export class IC extends CircuitComponent {
           refY: "50%",
           textAnchor: "middle",
           yAlignment: "middle",
-          // fontSize: FONT_SIZE,
-          // fill: IC_LABEL_COLOR,
         },
       },
     };

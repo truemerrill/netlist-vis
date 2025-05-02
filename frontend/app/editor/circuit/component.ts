@@ -51,6 +51,7 @@ function createPort(id: string, side: Side, cssClass: string): dia.Element.Port 
 export abstract class CircuitComponent extends dia.Element<Attributes> {
   defaults(): Partial<Attributes> {
     return {
+      type: "circuit.Component",
       body: {
         refWidth: "100%",
         refHeight: "100%",

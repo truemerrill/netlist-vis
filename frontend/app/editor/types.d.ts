@@ -29,7 +29,7 @@ export type ComponentType = "ic";
  * Describes a single circuit component such as an integrated circuit (IC).
  */
 export interface NetlistComponent {
-  kind: ComponentType;
+  kind: string;
 
   /**
    * A list of pin names on the left side of the component (typically inputs).
