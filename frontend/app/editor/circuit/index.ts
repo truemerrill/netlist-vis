@@ -13,13 +13,16 @@ export default function createCircuitComponent(
   name: string,
   def: NetlistComponent,
 ): CircuitComponent {
+  
+  // TODO: For now I am just modeling everything in the visual style of an IC,
+  //    but in the future we could dispatch based on def.kind and render
+  //    different components with different visual styles.
+  
   switch (def.kind) {
-    case "ic":
+    default:
       return IC.create(name, {
         left: def.left_pins,
         right: def.right_pins,
       });
-    default:
-      throw new Error(`Unsupported component kind: ${def.kind}`);
   }
 }

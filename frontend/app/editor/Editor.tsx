@@ -7,7 +7,7 @@ import createCircuitComponent from "./circuit";
 import { Wire } from "./circuit/wire";
 
 // Test data - replace with API call
-import data from "./netlist.json";
+import data from "./butterworth.json";
 const netlist: Netlist = data;
 
 type Graph = joint.dia.Graph;
@@ -80,57 +80,6 @@ function renderWires(
     }
   });
 }
-
-// function renderWires(
-//   graph: Graph,
-//   netlist: Netlist,
-//   componentMap: Record<string, joint.dia.Element>
-// ): void {
-//   Object.entries(netlist.connections).forEach(([name, connections]) => {
-//     for (let i = 0; i < connections.length - 1; i++) {
-//       const from = connections[i];
-//       const to = connections[i + 1];
-//       const fromElement = componentMap[from.component];
-//       const toElement = componentMap[to.component];
-
-//       const classMap: Record<string, string> = {
-//         gnd: "circuit-wire circuit-wire-gnd",
-//         vcc: "circuit-wire circuit-wire-vcc",
-//         clk: "circuit-wire circuit-wire-clk",
-//         default: "circuit-wire"
-//       };
-//       const cssClass = classMap[name.toLowerCase()] ?? classMap.default;
-//       const link = Wire.create(name, cssClass);
-//       link.source({ id: fromElement.id, port: from.pin });
-//       link.target({ id: toElement.id, port: to.pin });
-//       link.connector("jumpover", { size: 5 });
-//       link.router("metro", {
-//         alwaysMove: true,
-//         step: 10,
-//         padding: 10,
-//       });
-//       link.label(0, {
-//         attrs: {
-//           text: {
-//             text: name,
-//             fontSize: 12,
-//             fill: "#000",
-//             class: "wire-label",
-//           },
-//           rect: {
-//             fill: "transparent", // ✅ remove white box
-//             stroke: "none"
-//           }
-//         },
-//         position: {
-//           distance: 0.5,
-//           offset: 0
-//         }
-//       });
-//       graph.addCell(link);
-//     }
-//   });
-// }
 
 export default function Editor() {
   const containerRef = useRef<HTMLDivElement>(null);
