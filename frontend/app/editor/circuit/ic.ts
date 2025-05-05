@@ -1,3 +1,4 @@
+import type { dia, g } from "@joint/core";
 import { CircuitComponent } from "./component";
 import type { Attributes } from "./component";
 
@@ -30,5 +31,9 @@ export class IC extends CircuitComponent {
         },
       },
     };
+  }
+
+  getBBox(opt?: dia.Element.BBoxOptions): g.Rect {
+    return super.getBBox(opt);
   }
 }

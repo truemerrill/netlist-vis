@@ -46,6 +46,7 @@ export abstract class CircuitComponent extends dia.Element<Attributes> {
   defaults(): Partial<Attributes> {
     return {
       type: "circuit.Component",
+      position: {x: 0, y: 0},
       body: {
         refWidth: "100%",
         refHeight: "100%",
@@ -105,7 +106,7 @@ export abstract class CircuitComponent extends dia.Element<Attributes> {
     const maxCount = Math.max(pins.left.length, pins.right.length);
     const height = Math.max(MIN_HEIGHT, (maxCount + 1) * MIN_PIN_SPACING);
 
-    const obj = new this();
+    const obj = new this({ type: "circuit.Component" });
     obj.resize(60, height);
     obj.attr("root/class", cls);
     obj.attr("label/text", name);
