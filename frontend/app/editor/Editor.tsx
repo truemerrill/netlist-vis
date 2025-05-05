@@ -16,8 +16,8 @@ export default function Editor() {
   }, []);
 
   return (
-    <div className="flex h-full">
-      <EditorWindow netlist={selected ?? undefined} />
+    <div className="flex flex-col w-full h-full">
+      <EditorWindow netlist={selected} />
     </div>
   )
 }

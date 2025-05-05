@@ -6,10 +6,8 @@ import type { Netlist } from "./types.d.ts";
 import createCircuitComponent from "./circuit";
 import { Wire } from "./circuit/wire";
 
-
 type Graph = joint.dia.Graph;
 type Paper = joint.dia.Paper;
-
 
 /**
  * Render an entire netlist (components + wires) into a JointJS graph.
@@ -31,7 +29,7 @@ function renderNetlist(graph: Graph, netlist: Netlist): void {
  */
 function renderCircuitComponents(
   graph: Graph,
-  netlist: Netlist,
+  netlist: Netlist
 ): Record<string, joint.dia.Element> {
   const componentMap: Record<string, joint.dia.Element> = {};
 
@@ -43,7 +41,7 @@ function renderCircuitComponents(
     // out yet.
     element.position(
       100 + (index % 4) * 150,
-      100 + Math.floor(index / 4) * 200,
+      100 + Math.floor(index / 4) * 200
     );
 
     graph.addCell(element);
@@ -63,7 +61,7 @@ function renderCircuitComponents(
 function renderWires(
   graph: Graph,
   netlist: Netlist,
-  componentMap: Record<string, joint.dia.Element>,
+  componentMap: Record<string, joint.dia.Element>
 ): void {
   Object.entries(netlist.connections).forEach(([name, connections]) => {
     for (let i = 0; i < connections.length - 1; i++) {
@@ -75,7 +73,7 @@ function renderWires(
       const wire = Wire.create(
         name,
         { id: fromElement.id, port: from.pin },
-        { id: toElement.id, port: to.pin },
+        { id: toElement.id, port: to.pin }
       );
 
       graph.addCell(wire);
@@ -83,33 +81,46 @@ function renderWires(
   });
 }
 
-export default function EditorWindow({ netlist }: { netlist: Netlist | undefined }) {
+export default function EditorWindow({ netlist }: { netlist: Netlist | null }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!containerRef.current || !netlist) return;
-  
+
     const graph = new joint.dia.Graph();
     const paper = new joint.dia.Paper({
       el: containerRef.current,
       model: graph,
+      width: containerRef.current.clientWidth,
+      height: containerRef.current.clientHeight,
       gridSize: 10,
       drawGrid: true,
       background: { color: "#f0f0f0" },
-    }); 
-  
+    });
+
+    // Monitor the container for resize
+    // const resizeObserver = new ResizeObserver((entries) => {
+    //   for (let entry of entries) {
+    //     if (entry.contentRect) {
+    //       paper.setDimensions(
+    //         entry.contentRect.width,
+    //         entry.contentRect.height
+    //       );
+    //     }
+    //   }
+    // });
+    // resizeObserver.observe(containerRef.current);
+
     renderNetlist(graph, netlist);
     return () => {
+      resizeObserver.disconnect();
       paper.remove();
     };
   }, [netlist]);
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <div
-        ref={containerRef}
-        className="w-full h-full"
-      />
+    <div className="flex-1 relative">
+      <div ref={containerRef} className="absolute inset-0" />
     </div>
   );
 }

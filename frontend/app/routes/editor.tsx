@@ -1,5 +1,9 @@
 import Editor from "~/editor/Editor";
 
 export default function EditorPage() {
-  return <Editor />;
+  return (
+    <div className="w-screen h-screen">
+      <Editor />
+    </div>
+  );
 }
