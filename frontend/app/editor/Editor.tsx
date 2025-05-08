@@ -44,20 +44,14 @@ async function fetchRuleViolations(netlistId: string): Promise<any> {
 }
 
 
-type ChosenNetlist = {
-  netlist: Netlist,
-  violations: NetlistRuleViolation[]
-};
-
-
-function EditorMainPane({ choice }: { choice: ChosenNetlist | null }) {
+function EditorMainPane({ choice, violations }: { choice: Netlist | null, violations: NetlistRuleViolation[] }) {
   console.log("EditorMainPane render", choice);
   return (
-    <div className="main-pane">
+    <div className="main-pane flex flex-col h-full">
       {choice ? (
         <>
-          <EditorWindow netlist={choice.netlist} />
-          <MessagePane ruleViolations={choice.violations} />
+          <EditorWindow netlist={choice} />
+          <MessagePane violations={violations} />
         </>
       ) : (
         <div>No netlist selected</div>
@@ -69,7 +63,8 @@ function EditorMainPane({ choice }: { choice: ChosenNetlist | null }) {
 
 export default function Editor() {
   const [netlists, setNetlists] = useState<Netlist[]>([]);
-  const [choice, setChoice] = useState<ChosenNetlist | null>(null);
+  const [choice, setChoice] = useState<Netlist | null>(null);
+  const [violations, setViolations] = useState<NetlistRuleViolation[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -81,25 +76,25 @@ export default function Editor() {
   function handleSelect(netlist: Netlist): void {
     if (netlist._id === undefined) { return; }
     fetchRuleViolations(netlist._id)
-      .then((violations) => setChoice({netlist, violations}))
+      .then((violations) => {
+        setChoice(netlist);
+        setViolations(violations);
+      })
       .catch((err) => {
         setError(err.message);
         setChoice(null);
+        setViolations([]);
       });
   }
-
-  useEffect(() => {
-    console.log("EditorMainPane re-render", choice);
-  }, [choice]);  
 
   return (
     <Box display="flex" height="100vh" width="100vw">
       <Sidebar
         netlists={netlists}
-        selected={choice?.netlist}
+        choice={choice}
         onSelect={handleSelect}
       />
-      <EditorMainPane choice={choice} />
+      <EditorMainPane choice={choice} violations={violations} />
     </Box>
   );
 }

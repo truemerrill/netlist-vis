@@ -2,7 +2,7 @@
  * Represents a full netlist, including component definitions and signal connections.
  */
 export interface Netlist {
-  _id: string | undefined;
+  _id: string;
 
   /**
    * The user who owns or created the netlist.
@@ -65,7 +65,7 @@ export interface Connection {
 
 
 export interface NetlistRuleViolation {
-  _id: string | undefined;
+  _id: string;
  
   /**
    * The netlist ID

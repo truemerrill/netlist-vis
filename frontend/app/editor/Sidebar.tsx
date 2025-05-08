@@ -1,27 +1,20 @@
-import {
-  Box,
-  Typography,
-  List,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
 import type { Netlist } from "./types";
 
 type SidebarProps = {
   netlists: Netlist[];
-  selected: Netlist | undefined;
+  choice: Netlist | null;
   onSelect: (netlist: Netlist) => void;
 };
 
-export function Sidebar({ netlists, selected, onSelect }: SidebarProps) {
+export function Sidebar({ netlists, choice, onSelect }: SidebarProps) {
   function cssClass(netlist: Netlist): string {
-    if (netlist._id === selected?._id) {
+    if (netlist._id === choice?._id) {
       return "selected sidebar-item";
     } else {
       return "sidebar-item";
     }
   }
-  
+
   return (
     <div className="sidebar">
       <h4>Netlists</h4>

@@ -16,6 +16,7 @@ type Paper = joint.dia.Paper;
  * @param netlist - The structured netlist to render
  */
 function renderNetlist(graph: Graph, netlist: Netlist): void {
+  graph.clear();
   const componentMap = renderCircuitComponents(graph, netlist);
   renderWires(graph, netlist, componentMap);
 }
@@ -81,16 +82,17 @@ function renderWires(
   });
 }
 
-export function EditorWindow({ netlist }: { netlist: Netlist | null }) {
+export function EditorWindow({ netlist }: { netlist: Netlist }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
+  /* Manage JointJS paper when component is mounted / unmounted */
   useEffect(() => {
-    console.log("Mounting EditorWindow", netlist);
-    if (!containerRef.current || !netlist) return;
-
+    if (!canvasRef.current || !containerRef.current || !netlist) return;
+    
     const graph = new joint.dia.Graph();
     const paper = new joint.dia.Paper({
-      el: containerRef.current,
+      el: canvasRef.current,
       model: graph,
       width: containerRef.current.clientWidth,
       height: containerRef.current.clientHeight,
@@ -99,16 +101,23 @@ export function EditorWindow({ netlist }: { netlist: Netlist | null }) {
       background: { color: "#f0f0f0" },
     });
 
+    const resizeObserver = new ResizeObserver(() => {
+      const w = containerRef.current!.clientWidth;
+      const h = containerRef.current!.clientHeight;
+      paper.setDimensions(w, h);
+    });
+    resizeObserver.observe(containerRef.current);
+
     renderNetlist(graph, netlist);
     return () => {
-      console.log("Cleaning up EditorWindow", netlist);
-      paper.remove();
+      resizeObserver.disconnect();
+      paper.model.clear();
     };
   }, [netlist]);
 
   return (
-    <div className="flex-1 relative">
-      <div ref={containerRef} className="absolute inset-0" />
+    <div ref={containerRef} className="flex-1 relative">
+      <div ref={canvasRef} className="absolute inset-0" />
     </div>
   );
 }

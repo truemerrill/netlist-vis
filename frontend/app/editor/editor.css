@@ -11,6 +11,10 @@
   --color-fill: #dde6ed;
 }
 
+.editor {
+  display: flex;
+}
+
 /* Left sidebar */
 .sidebar {
   width: 200px;

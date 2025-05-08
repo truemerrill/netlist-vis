@@ -1,20 +1,10 @@
-import {
-  Box,
-  Typography,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-} from "@mui/material";
-
 import type { NetlistRuleViolation } from "./types";
 
 type MessagePaneProps = {
-  ruleViolations: NetlistRuleViolation[];
+  violations: NetlistRuleViolation[];
 };
 
-function MessagePaneWithViolations({ ruleViolations }: MessagePaneProps) {
+function MessagePaneWithViolations({ violations: ruleViolations }: MessagePaneProps) {
   return (
     <div className="message-pane">
       <table aria-label="rule violations">
@@ -49,10 +39,14 @@ function MessagePaneWithoutViolations() {
   );
 }
 
-export function MessagePane({ ruleViolations }: MessagePaneProps) {
-  if (ruleViolations.length > 0) {
-    return <MessagePaneWithViolations ruleViolations={ruleViolations} />;
-  } else {
-    return <MessagePaneWithoutViolations />;
-  }
+export function MessagePane({ violations }: MessagePaneProps) {
+  const hasViolations = (violations.length > 0);
+  return (
+    <>
+      {hasViolations ?
+        <MessagePaneWithViolations violations={violations} />  :
+        <MessagePaneWithoutViolations />
+      }
+    </>
+  );
 }
