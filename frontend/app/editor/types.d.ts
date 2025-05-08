@@ -2,10 +2,17 @@
  * Represents a full netlist, including component definitions and signal connections.
  */
 export interface Netlist {
+  _id: string | undefined;
+
   /**
    * The user who owns or created the netlist.
    */
   user_id: string;
+
+  /**
+   * The name of the netlist
+   */
+  name: string;
 
   /**
    * A mapping of component IDs (e.g., "C1", "U1") to their definitions.
@@ -54,4 +61,29 @@ export interface Connection {
    * The name of the pin on the component that participates in this connection.
    */
   pin: string;
+}
+
+
+export interface NetlistRuleViolation {
+  _id: string | undefined;
+ 
+  /**
+   * The netlist ID
+   */
+  netlist_id: string;
+
+  /**
+   * The rule name
+   */
+  rule: string;
+
+  /**
+   * The timestamp when the rule was last checked
+   */
+  timestamp: string;
+
+  /**
+   * Detail about the rule violation
+   */
+  detail: string;
 }

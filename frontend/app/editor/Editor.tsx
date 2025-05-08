@@ -1,23 +1,105 @@
 import { useEffect, useState } from "react";
-import EditorWindow from "./EditorWindow";
-import type { Netlist } from "./types.d.ts";
+import { Box } from "@mui/material";
+
+import { EditorWindow } from "./EditorWindow";
+import { MessagePane } from "./MessagePane";
+import { Sidebar } from "./Sidebar";
+
+import type { NetlistRuleViolation, Netlist } from "./types.d.ts";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 
-// Test data - replace with API call
-import data from "./butterworth.json";
-const netlist: Netlist = data;
+async function fetchNetlists(): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/netlist`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to fetch netlist: ${response.status} ${errorText}`);
+  }
+
+  return await response.json();
+}
+
+
+async function fetchRuleViolations(netlistId: string): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/netlist/${netlistId}/check`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to fetch rule violations: ${errorText}`);
+  }
+
+  return await response.json();
+}
+
+
+type ChosenNetlist = {
+  netlist: Netlist,
+  violations: NetlistRuleViolation[]
+};
+
+
+function EditorMainPane({ choice }: { choice: ChosenNetlist | null }) {
+  console.log("EditorMainPane render", choice);
+  return (
+    <div className="main-pane">
+      {choice ? (
+        <>
+          <EditorWindow netlist={choice.netlist} />
+          <MessagePane ruleViolations={choice.violations} />
+        </>
+      ) : (
+        <div>No netlist selected</div>
+      )}
+    </div>
+  );
+}
 
 
 export default function Editor() {
-  const [selected, setSelected] = useState<Netlist | null>(null);
+  const [netlists, setNetlists] = useState<Netlist[]>([]);
+  const [choice, setChoice] = useState<ChosenNetlist | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setSelected(netlist);
+    fetchNetlists()
+      .then((netlists) => setNetlists(netlists))
+      .catch((err) => setError(err.message));
   }, []);
 
+  function handleSelect(netlist: Netlist): void {
+    if (netlist._id === undefined) { return; }
+    fetchRuleViolations(netlist._id)
+      .then((violations) => setChoice({netlist, violations}))
+      .catch((err) => {
+        setError(err.message);
+        setChoice(null);
+      });
+  }
+
+  useEffect(() => {
+    console.log("EditorMainPane re-render", choice);
+  }, [choice]);  
+
   return (
-    <div className="flex flex-col w-full h-full">
-      <EditorWindow netlist={selected} />
-    </div>
-  )
+    <Box display="flex" height="100vh" width="100vw">
+      <Sidebar
+        netlists={netlists}
+        selected={choice?.netlist}
+        onSelect={handleSelect}
+      />
+      <EditorMainPane choice={choice} />
+    </Box>
+  );
 }

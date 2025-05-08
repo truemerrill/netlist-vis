@@ -81,10 +81,11 @@ function renderWires(
   });
 }
 
-export default function EditorWindow({ netlist }: { netlist: Netlist | null }) {
+export function EditorWindow({ netlist }: { netlist: Netlist | null }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("Mounting EditorWindow", netlist);
     if (!containerRef.current || !netlist) return;
 
     const graph = new joint.dia.Graph();
@@ -98,22 +99,9 @@ export default function EditorWindow({ netlist }: { netlist: Netlist | null }) {
       background: { color: "#f0f0f0" },
     });
 
-    // Monitor the container for resize
-    // const resizeObserver = new ResizeObserver((entries) => {
-    //   for (let entry of entries) {
-    //     if (entry.contentRect) {
-    //       paper.setDimensions(
-    //         entry.contentRect.width,
-    //         entry.contentRect.height
-    //       );
-    //     }
-    //   }
-    // });
-    // resizeObserver.observe(containerRef.current);
-
     renderNetlist(graph, netlist);
     return () => {
-      resizeObserver.disconnect();
+      console.log("Cleaning up EditorWindow", netlist);
       paper.remove();
     };
   }, [netlist]);

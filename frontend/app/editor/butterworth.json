@@ -1,5 +1,6 @@
 {
     "user_id": "example-user",
+    "name": "butterworth",
     "components": {
       "R1": {
         "kind": "resistor",

@@ -61,6 +61,7 @@ class Netlist(Document):
 
     Attributes:
         user_id (ObjectId): the id of the user who owns the netlist
+        name (str): the netlist name
         components (dict[str, Component]): the components used in the netlist.
             The keys are the component names (for example, "LM741") and the
             values are the left and right pins.
@@ -70,6 +71,7 @@ class Netlist(Document):
     """
 
     user_id: PydanticObjectId
+    name: str
     components: dict[str, Component]
     connections: dict[str, tuple[Pin, ...]]
 
