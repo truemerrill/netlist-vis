@@ -13,11 +13,10 @@ export default function createCircuitComponent(
   name: string,
   def: NetlistComponent,
 ): CircuitComponent {
-  
   // TODO: For now I am just modeling everything in the visual style of an IC,
   //    but in the future we could dispatch based on def.kind and render
   //    different components with different visual styles.
-  
+
   switch (def.kind) {
     default:
       return IC.create(name, {

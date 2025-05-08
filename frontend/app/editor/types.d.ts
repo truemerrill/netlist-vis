@@ -63,10 +63,9 @@ export interface Connection {
   pin: string;
 }
 
-
 export interface NetlistRuleViolation {
   _id: string;
- 
+
   /**
    * The netlist ID
    */

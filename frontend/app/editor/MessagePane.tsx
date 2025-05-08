@@ -4,17 +4,19 @@ type MessagePaneProps = {
   violations: NetlistRuleViolation[];
 };
 
-function MessagePaneWithViolations({ violations: ruleViolations }: MessagePaneProps) {
+function MessagePaneWithViolations({
+  violations: ruleViolations,
+}: MessagePaneProps) {
   return (
     <div className="message-pane">
       <table aria-label="rule violations">
         <thead>
           <tr>
             <td>
-              Rule
+              <strong>Rule</strong>
             </td>
             <td>
-              Detail
+              <strong>Detail</strong>
             </td>
           </tr>
         </thead>
@@ -40,13 +42,14 @@ function MessagePaneWithoutViolations() {
 }
 
 export function MessagePane({ violations }: MessagePaneProps) {
-  const hasViolations = (violations.length > 0);
+  const hasViolations = violations.length > 0;
   return (
     <>
-      {hasViolations ?
-        <MessagePaneWithViolations violations={violations} />  :
+      {hasViolations ? (
+        <MessagePaneWithViolations violations={violations} />
+      ) : (
         <MessagePaneWithoutViolations />
-      }
+      )}
     </>
   );
 }

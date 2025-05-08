@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as joint from "@joint/core";
 
-import "./editor.css";
 import type { Netlist } from "./types.d.ts";
 import createCircuitComponent from "./circuit";
 import { Wire } from "./circuit/wire";
@@ -30,7 +29,7 @@ function renderNetlist(graph: Graph, netlist: Netlist): void {
  */
 function renderCircuitComponents(
   graph: Graph,
-  netlist: Netlist
+  netlist: Netlist,
 ): Record<string, joint.dia.Element> {
   const componentMap: Record<string, joint.dia.Element> = {};
 
@@ -42,7 +41,7 @@ function renderCircuitComponents(
     // out yet.
     element.position(
       100 + (index % 4) * 150,
-      100 + Math.floor(index / 4) * 200
+      100 + Math.floor(index / 4) * 200,
     );
 
     graph.addCell(element);
@@ -62,7 +61,7 @@ function renderCircuitComponents(
 function renderWires(
   graph: Graph,
   netlist: Netlist,
-  componentMap: Record<string, joint.dia.Element>
+  componentMap: Record<string, joint.dia.Element>,
 ): void {
   Object.entries(netlist.connections).forEach(([name, connections]) => {
     for (let i = 0; i < connections.length - 1; i++) {
@@ -74,7 +73,7 @@ function renderWires(
       const wire = Wire.create(
         name,
         { id: fromElement.id, port: from.pin },
-        { id: toElement.id, port: to.pin }
+        { id: toElement.id, port: to.pin },
       );
 
       graph.addCell(wire);
@@ -89,7 +88,7 @@ export function EditorWindow({ netlist }: { netlist: Netlist }) {
   /* Manage JointJS paper when component is mounted / unmounted */
   useEffect(() => {
     if (!canvasRef.current || !containerRef.current || !netlist) return;
-    
+
     const graph = new joint.dia.Graph();
     const paper = new joint.dia.Paper({
       el: canvasRef.current,

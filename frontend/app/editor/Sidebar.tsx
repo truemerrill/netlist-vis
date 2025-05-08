@@ -1,4 +1,5 @@
 import type { Netlist } from "./types";
+import logo from "./logo.svg";
 
 type SidebarProps = {
   netlists: Netlist[];
@@ -17,7 +18,10 @@ export function Sidebar({ netlists, choice, onSelect }: SidebarProps) {
 
   return (
     <div className="sidebar">
-      <h4>Netlists</h4>
+      <div className="sidebar-title">
+        <img src={logo} width={30} height={30}></img>
+        <h1>Netlists</h1>
+      </div>
       <div className="sidebar-selector">
         <ul>
           {netlists.map((netlist) => (

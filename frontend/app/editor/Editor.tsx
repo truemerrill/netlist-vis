@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
 
 import { EditorWindow } from "./EditorWindow";
 import { MessagePane } from "./MessagePane";
 import { Sidebar } from "./Sidebar";
 
+import "./editor.css";
+
 import type { NetlistRuleViolation, Netlist } from "./types.d.ts";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
-
 
 async function fetchNetlists(): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/netlist`, {
@@ -26,7 +26,6 @@ async function fetchNetlists(): Promise<any> {
   return await response.json();
 }
 
-
 async function fetchRuleViolations(netlistId: string): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/netlist/${netlistId}/check`, {
     method: "POST",
@@ -43,8 +42,13 @@ async function fetchRuleViolations(netlistId: string): Promise<any> {
   return await response.json();
 }
 
-
-function EditorMainPane({ choice, violations }: { choice: Netlist | null, violations: NetlistRuleViolation[] }) {
+function EditorMainPane({
+  choice,
+  violations,
+}: {
+  choice: Netlist | null;
+  violations: NetlistRuleViolation[];
+}) {
   console.log("EditorMainPane render", choice);
   return (
     <div className="main-pane flex flex-col h-full">
@@ -54,12 +58,13 @@ function EditorMainPane({ choice, violations }: { choice: Netlist | null, violat
           <MessagePane violations={violations} />
         </>
       ) : (
-        <div>No netlist selected</div>
+        <div className="main-pane items-center justify-center">
+          No netlist selected
+        </div>
       )}
     </div>
   );
 }
-
 
 export default function Editor() {
   const [netlists, setNetlists] = useState<Netlist[]>([]);
@@ -74,7 +79,9 @@ export default function Editor() {
   }, []);
 
   function handleSelect(netlist: Netlist): void {
-    if (netlist._id === undefined) { return; }
+    if (netlist._id === undefined) {
+      return;
+    }
     fetchRuleViolations(netlist._id)
       .then((violations) => {
         setChoice(netlist);
@@ -88,13 +95,9 @@ export default function Editor() {
   }
 
   return (
-    <Box display="flex" height="100vh" width="100vw">
-      <Sidebar
-        netlists={netlists}
-        choice={choice}
-        onSelect={handleSelect}
-      />
+    <div className="editor">
+      <Sidebar netlists={netlists} choice={choice} onSelect={handleSelect} />
       <EditorMainPane choice={choice} violations={violations} />
-    </Box>
+    </div>
   );
 }
